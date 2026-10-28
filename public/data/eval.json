@@ -1,0 +1,1183 @@
+{
+  "generatedAt": "2026-10-28",
+  "model": {
+    "embed": "gemini-embedding-2"
+  },
+  "corpus": {
+    "extracted": 5179
+  },
+  "extraction": {
+    "labeled": 60,
+    "scored": 60,
+    "failure_mode_accuracy": 0.783,
+    "hazard_type_accuracy": 0.817
+  },
+  "quote_support_rate": 0.999,
+  "retrieval": {
+    "queries": 15,
+    "note": "hit@10/recall@10 are strict id-based and a conservative lower bound: the corpus has many near-identical valid matches, so the specific labeled records are often outranked. relevance@10 measures whether the top-10 surface the correct category + failure mode, which is what the tool needs.",
+    "hit@10": 0.4,
+    "recall@10": 0.24,
+    "relevance_hit@10": 0.867,
+    "relevance_precision@10": 0.647
+  },
+  "perRecord": [
+    {
+      "id": "cpsc-9892",
+      "failure_mode": {
+        "got": "glass_component_shattering",
+        "want": "overheating_fire",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "laceration",
+        "want": "fire",
+        "ok": false
+      }
+    },
+    {
+      "id": "eu-SR-01370-26",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "healthcanada-82098",
+      "failure_mode": {
+        "got": "overheating_fire",
+        "want": "overheating_fire",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260927-4629A-2147308816",
+      "failure_mode": {
+        "got": "smoke_emission",
+        "want": "smoke_emission",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "cpsc-9796",
+      "failure_mode": {
+        "got": "other",
+        "want": "handle_door_latch_failure",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-OR-00041-26",
+      "failure_mode": {
+        "got": "overheating_fire",
+        "want": "overheating_fire",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "fire",
+        "ok": false
+      }
+    },
+    {
+      "id": "healthcanada-75178",
+      "failure_mode": {
+        "got": "overheating_fire",
+        "want": "overheating_fire",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "cpsc-10230",
+      "failure_mode": {
+        "got": "unexpected_activation",
+        "want": "unexpected_activation",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "laceration",
+        "want": "laceration",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-SR-02283-26",
+      "failure_mode": {
+        "got": "unexpected_activation",
+        "want": "unexpected_activation",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "laceration",
+        "want": "laceration",
+        "ok": true
+      }
+    },
+    {
+      "id": "healthcanada-74760",
+      "failure_mode": {
+        "got": "other",
+        "want": "motor_overheat_fire_smoke",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "other",
+        "want": "fire",
+        "ok": false
+      }
+    },
+    {
+      "id": "saferproducts-20260925-08A5E-2147309035",
+      "failure_mode": {
+        "got": "unexpected_activation",
+        "want": "unexpected_activation",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "laceration",
+        "want": "laceration",
+        "ok": true
+      }
+    },
+    {
+      "id": "cpsc-9982",
+      "failure_mode": {
+        "got": "blade_detachment_or_breakage",
+        "want": "blade_detachment_or_breakage",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "laceration",
+        "want": "laceration",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-OR-00093-26",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "shock",
+        "want": "shock",
+        "ok": true
+      }
+    },
+    {
+      "id": "healthcanada-73685",
+      "failure_mode": {
+        "got": "other",
+        "want": "blade_detachment_or_breakage",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "laceration",
+        "want": "laceration",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260919-F910A-2147309605",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "other",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "other",
+        "want": "other",
+        "ok": true
+      }
+    },
+    {
+      "id": "cpsc-10821",
+      "failure_mode": {
+        "got": "hot_liquid_or_steam_ejection",
+        "want": "hot_liquid_or_steam_ejection",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-SR-01126-26",
+      "failure_mode": {
+        "got": "hot_liquid_or_steam_ejection",
+        "want": "hot_liquid_or_steam_ejection",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260916-C1148-2147309832",
+      "failure_mode": {
+        "got": "hot_liquid_or_steam_ejection",
+        "want": "hot_liquid_or_steam_ejection",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "cpsc-10209",
+      "failure_mode": {
+        "got": "hot_liquid_or_steam_ejection",
+        "want": "carafe_glass_shattering",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-SR-01132-26",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260914-6E4E9-2147310028",
+      "failure_mode": {
+        "got": "other",
+        "want": "scald_during_normal_use",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "cpsc-10986",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "shock",
+        "want": "shock",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-SR-02105-26",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "fire_or_flare_up",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "healthcanada-82607",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "shock",
+        "want": "shock",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-SR-01942-26",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "shock",
+        "want": "shock",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260914-374E2-2147309988",
+      "failure_mode": {
+        "got": "overheating_or_runaway_heating",
+        "want": "other",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "other",
+        "ok": false
+      }
+    },
+    {
+      "id": "saferproducts-20261004-232E2-2147308375",
+      "failure_mode": {
+        "got": "overheating_or_runaway_heating",
+        "want": "electrical_fault_shock",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "shock",
+        "ok": false
+      }
+    },
+    {
+      "id": "cpsc-10861",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "shock",
+        "want": "shock",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-SR-02858-26",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "shock",
+        "want": "shock",
+        "ok": true
+      }
+    },
+    {
+      "id": "healthcanada-82296",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "shock",
+        "want": "shock",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-SR-01967-26",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "shock",
+        "want": "shock",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20261007-F0ECD-2147308234",
+      "failure_mode": {
+        "got": "overheating_fire",
+        "want": "overheating_fire",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260917-738CF-2147309773",
+      "failure_mode": {
+        "got": "overheating_fire",
+        "want": "overheating_fire",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "cpsc-10776",
+      "failure_mode": {
+        "got": "scald_from_hot_water",
+        "want": "scald_from_hot_water",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-SR-02808-26",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "shock",
+        "want": "shock",
+        "ok": true
+      }
+    },
+    {
+      "id": "healthcanada-82052",
+      "failure_mode": {
+        "got": "scald_from_hot_water",
+        "want": "scald_from_hot_water",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20261001-7A119-2147308429",
+      "failure_mode": {
+        "got": "scald_from_hot_water",
+        "want": "scald_from_hot_water",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "cpsc-10716",
+      "failure_mode": {
+        "got": "scald_from_hot_water",
+        "want": "scald_from_hot_water",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-SR-02668-26",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "shock",
+        "want": "shock",
+        "ok": true
+      }
+    },
+    {
+      "id": "healthcanada-75614",
+      "failure_mode": {
+        "got": "overheating_fire",
+        "want": "overheating_fire",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "cpsc-9735",
+      "failure_mode": {
+        "got": "blade_paddle_breakage",
+        "want": "blade_paddle_breakage",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "laceration",
+        "want": "laceration",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260919-1F763-2147309593",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "shock",
+        "want": "shock",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260920-9FF27-2147309535",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "motor_overheat",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260917-5D534-2147309762",
+      "failure_mode": {
+        "got": "blade_paddle_breakage",
+        "want": "blade_paddle_breakage",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "other",
+        "ok": false
+      }
+    },
+    {
+      "id": "saferproducts-20260726-C1E98-2147313372",
+      "failure_mode": {
+        "got": "blade_paddle_breakage",
+        "want": "blade_paddle_breakage",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "choking/ingestion",
+        "want": "choking/ingestion",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260630-B1ABB-2147314664",
+      "failure_mode": {
+        "got": "blade_paddle_breakage",
+        "want": "blade_paddle_breakage",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "choking/ingestion",
+        "want": "laceration",
+        "ok": false
+      }
+    },
+    {
+      "id": "saferproducts-20260426-23585-2147320094",
+      "failure_mode": {
+        "got": "blade_paddle_breakage",
+        "want": "blade_paddle_breakage",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "choking/ingestion",
+        "want": "choking/ingestion",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260410-57218-2147320739",
+      "failure_mode": {
+        "got": "motor_overheat",
+        "want": "motor_overheat",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260405-440CD-2147320943",
+      "failure_mode": {
+        "got": "blade_paddle_breakage",
+        "want": "blade_paddle_breakage",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260304-2AAED-2147322984",
+      "failure_mode": {
+        "got": "blade_paddle_breakage",
+        "want": "blade_paddle_breakage",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "choking/ingestion",
+        "want": "laceration",
+        "ok": false
+      }
+    },
+    {
+      "id": "saferproducts-20260217-6F3FC-2147323465",
+      "failure_mode": {
+        "got": "blade_paddle_breakage",
+        "want": "blade_paddle_breakage",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "choking/ingestion",
+        "want": "other",
+        "ok": false
+      }
+    },
+    {
+      "id": "saferproducts-20251222-6BE9B-2147325299",
+      "failure_mode": {
+        "got": "motor_overheat",
+        "want": "motor_overheat",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "cpsc-10422",
+      "failure_mode": {
+        "got": "lid_opens_under_pressure",
+        "want": "lid_opens_under_pressure",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "eu-SR-02631-26",
+      "failure_mode": {
+        "got": "electrical_fault_shock",
+        "want": "electrical_fault_shock",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "fire",
+        "want": "fire",
+        "ok": true
+      }
+    },
+    {
+      "id": "healthcanada-77361",
+      "failure_mode": {
+        "got": "lid_opens_under_pressure",
+        "want": "lid_opens_under_pressure",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260928-CDB51-2147308685",
+      "failure_mode": {
+        "got": "seal_gasket_failure",
+        "want": "overpressure_rupture_explosion",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260811-60863-2147312556",
+      "failure_mode": {
+        "got": "hot_contents_eruption",
+        "want": "pressure_release_valve_failure",
+        "ok": false
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260804-570B9-2147312896",
+      "failure_mode": {
+        "got": "overpressure_rupture_explosion",
+        "want": "overpressure_rupture_explosion",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "burn",
+        "want": "burn",
+        "ok": true
+      }
+    },
+    {
+      "id": "saferproducts-20260901-DF2FF-2147310715",
+      "failure_mode": {
+        "got": "other",
+        "want": "other",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "laceration",
+        "want": "burn",
+        "ok": false
+      }
+    },
+    {
+      "id": "saferproducts-20260802-40409-2147313018",
+      "failure_mode": {
+        "got": "other",
+        "want": "other",
+        "ok": true
+      },
+      "hazard_type": {
+        "got": "laceration",
+        "want": "other",
+        "ok": false
+      }
+    }
+  ],
+  "perQuery": [
+    {
+      "q": "pressure cooker lid can be opened while still under pressure",
+      "hit": false,
+      "found": [],
+      "expected": [
+        "cpsc-10422",
+        "healthcanada-77361"
+      ],
+      "relevant_in_top10": 9,
+      "relevance_precision_at10": 0.9,
+      "top10": [
+        "saferproducts-20151025-FFC84-2147427248",
+        "saferproducts-20180627-4FFC0-2147387148",
+        "saferproducts-20151102-992BA-2147427065",
+        "saferproducts-20180817-70428-2147386106",
+        "saferproducts-20160205-59F46-2147422008",
+        "saferproducts-20260614-808C2-2147316721",
+        "saferproducts-20170130-6C472-1627550",
+        "saferproducts-20120706-3B74A-2147465946",
+        "saferproducts-20230703-83510-2147346649",
+        "saferproducts-20160407-4529E-2147420377"
+      ]
+    },
+    {
+      "q": "air fryer overheating and catching fire",
+      "hit": false,
+      "found": [],
+      "expected": [
+        "cpsc-9892",
+        "healthcanada-82098",
+        "healthcanada-75178",
+        "eu-OR-00041-26",
+        "saferproducts-20261007-F0ECD-2147308234",
+        "saferproducts-20260917-738CF-2147309773"
+      ],
+      "relevant_in_top10": 9,
+      "relevance_precision_at10": 0.9,
+      "top10": [
+        "saferproducts-20220731-32924-2147354687",
+        "saferproducts-20260401-04A2C-2147321100",
+        "saferproducts-20210701-FE98D-2147363190",
+        "saferproducts-20230901-881E5-2147345439",
+        "saferproducts-20250523-B3DCB-2147331115",
+        "saferproducts-20240327-B2617-2147340112",
+        "saferproducts-20200729-2B5F9-2147370802",
+        "saferproducts-20220303-4E615-2147357362",
+        "saferproducts-20231223-6451D-2147343280",
+        "saferproducts-20230527-11059-2147347333"
+      ]
+    },
+    {
+      "q": "blender container separates from blade base exposing the blades",
+      "hit": false,
+      "found": [],
+      "expected": [
+        "cpsc-9982",
+        "healthcanada-73685",
+        "cpsc-10230"
+      ],
+      "relevant_in_top10": 8,
+      "relevance_precision_at10": 0.8,
+      "top10": [
+        "saferproducts-20240714-8BEB4-2147337990",
+        "saferproducts-20151114-FB9EF-2147426692",
+        "saferproducts-20200419-B6417-2147372822",
+        "saferproducts-20151120-BE549-2147426496",
+        "saferproducts-20170714-56BF0-2147398972",
+        "saferproducts-20250928-E21BE-2147327475",
+        "saferproducts-20121123-A943C-2147461677",
+        "saferproducts-20250601-D7620-2147330926",
+        "saferproducts-20151116-5F3C1-2147426629",
+        "saferproducts-20190922-81CCD-2147377540"
+      ]
+    },
+    {
+      "q": "Ninja Creami blade breaking leaving metal shards in the ice cream",
+      "hit": true,
+      "found": [
+        "saferproducts-20260426-23585-2147320094",
+        "saferproducts-20260304-2AAED-2147322984",
+        "saferproducts-20260726-C1E98-2147313372"
+      ],
+      "expected": [
+        "saferproducts-20260726-C1E98-2147313372",
+        "saferproducts-20260426-23585-2147320094",
+        "saferproducts-20260405-440CD-2147320943",
+        "saferproducts-20260917-5D534-2147309762",
+        "saferproducts-20260304-2AAED-2147322984"
+      ],
+      "relevant_in_top10": 9,
+      "relevance_precision_at10": 0.9,
+      "top10": [
+        "saferproducts-20260217-6F3FC-2147323465",
+        "saferproducts-20230708-88E3C-2147346527",
+        "saferproducts-20240807-500CE-2147337434",
+        "saferproducts-20260426-23585-2147320094",
+        "saferproducts-20260304-2AAED-2147322984",
+        "saferproducts-20240528-759AF-2147338952",
+        "saferproducts-20260726-C1E98-2147313372",
+        "saferproducts-20230808-AB2B2-2147345938",
+        "saferproducts-20240314-1AB52-2147340381",
+        "saferproducts-20240325-34CA7-2147340150"
+      ]
+    },
+    {
+      "q": "glass carafe shattering on an espresso machine",
+      "hit": false,
+      "found": [],
+      "expected": [
+        "cpsc-10209"
+      ],
+      "relevant_in_top10": 0,
+      "relevance_precision_at10": 0,
+      "top10": [
+        "saferproducts-20210712-F7AC3-2147362916",
+        "saferproducts-20230205-A20DA-2147350934",
+        "saferproducts-20210709-3E91D-2147363038",
+        "saferproducts-20210720-9DCD0-2147361746",
+        "saferproducts-20210714-5444E-2147362879",
+        "saferproducts-20210709-A9EAE-2147363001",
+        "saferproducts-20210709-715E7-2147363019",
+        "saferproducts-20210709-C9303-2147362983",
+        "saferproducts-20210710-2ABA8-2147362969",
+        "saferproducts-20210809-F130B-2147361219"
+      ]
+    },
+    {
+      "q": "electric kettle handle loosens and hot water spills",
+      "hit": false,
+      "found": [],
+      "expected": [
+        "cpsc-10776",
+        "cpsc-10716",
+        "healthcanada-82052"
+      ],
+      "relevant_in_top10": 8,
+      "relevance_precision_at10": 0.8,
+      "top10": [
+        "saferproducts-20220604-7298F-2147355801",
+        "saferproducts-20260824-708E9-2147311969",
+        "saferproducts-20220712-E52D6-2147355044",
+        "saferproducts-20180810-38BBC-2147386258",
+        "saferproducts-20260308-EEF31-2147322875",
+        "saferproducts-20120529-3B888-1250525",
+        "saferproducts-20260725-4E95D-2147313402",
+        "saferproducts-20210626-1D8C5-2147363279",
+        "saferproducts-20140318-F0024-2147446254",
+        "saferproducts-20260724-16EDC-2147313467"
+      ]
+    },
+    {
+      "q": "toaster oven electric shock hazard",
+      "hit": false,
+      "found": [],
+      "expected": [
+        "cpsc-10861",
+        "healthcanada-82296"
+      ],
+      "relevant_in_top10": 10,
+      "relevance_precision_at10": 1,
+      "top10": [
+        "saferproducts-20160415-2C9BE-2147420167",
+        "saferproducts-20160111-42086-2147424826",
+        "saferproducts-20150901-20C2A-2147428802",
+        "saferproducts-20111226-A25B8-2147472053",
+        "saferproducts-20140125-54317-2147447821",
+        "saferproducts-20241227-9D135-2147334337",
+        "saferproducts-20190614-719BC-1880507",
+        "saferproducts-20170624-0D5CD-2147399445",
+        "saferproducts-20260714-7684A-2147313965",
+        "saferproducts-20150113-5813C-2147436538"
+      ]
+    },
+    {
+      "q": "coffee maker ejecting hot liquid or steam unexpectedly",
+      "hit": false,
+      "found": [],
+      "expected": [
+        "cpsc-10821",
+        "eu-SR-01126-26",
+        "saferproducts-20260916-C1148-2147309832"
+      ],
+      "relevant_in_top10": 9,
+      "relevance_precision_at10": 0.9,
+      "top10": [
+        "saferproducts-20210705-9A2BE-2147363114",
+        "saferproducts-20241006-2A08A-2147336122",
+        "saferproducts-20141223-FD8D5-2147437523",
+        "saferproducts-20150904-56971-2147428708",
+        "saferproducts-20160912-D8F0B-2147414253",
+        "saferproducts-20150101-30FF9-2147437110",
+        "saferproducts-20141226-9FD0C-2147437424",
+        "saferproducts-20141031-C040E-1438310",
+        "saferproducts-20251215-217FD-5782600",
+        "saferproducts-20140830-EB492-2147441389"
+      ]
+    },
+    {
+      "q": "instant pot exploded during cooking",
+      "hit": true,
+      "found": [
+        "saferproducts-20260928-CDB51-2147308685"
+      ],
+      "expected": [
+        "saferproducts-20260928-CDB51-2147308685",
+        "saferproducts-20260804-570B9-2147312896",
+        "saferproducts-20260811-60863-2147312556"
+      ],
+      "relevant_in_top10": 6,
+      "relevance_precision_at10": 0.6,
+      "top10": [
+        "saferproducts-20180615-870D3-2147387342",
+        "saferproducts-20260928-CDB51-2147308685",
+        "saferproducts-20231009-6DB0F-2147344753",
+        "saferproducts-20230201-74FB4-2147351014",
+        "saferproducts-20170219-5144F-2147406957",
+        "saferproducts-20210319-2C155-2147365280",
+        "saferproducts-20150325-8CCAE-2147434251",
+        "saferproducts-20140213-BB455-2147447279",
+        "saferproducts-20151013-72A18-2147427562",
+        "saferproducts-20201212-57DB6-2147367506"
+      ]
+    },
+    {
+      "q": "electric grill electric shock from loose earth wire",
+      "hit": true,
+      "found": [
+        "healthcanada-82607",
+        "eu-SR-02105-26"
+      ],
+      "expected": [
+        "cpsc-10986",
+        "healthcanada-82607",
+        "eu-SR-02105-26",
+        "eu-SR-01942-26"
+      ],
+      "relevant_in_top10": 9,
+      "relevance_precision_at10": 0.9,
+      "top10": [
+        "healthcanada-82607",
+        "saferproducts-20241227-9D135-2147334337",
+        "saferproducts-20161227-0C63D-2147408850",
+        "saferproducts-20111014-B49DB-1207925",
+        "saferproducts-20221202-6DCF3-2147352254",
+        "eu-SR-02105-26",
+        "saferproducts-20131211-CA3C9-2147449133",
+        "saferproducts-20230706-99F17-2147346584",
+        "saferproducts-20151123-F0972-1533234",
+        "saferproducts-20230122-FC7E5-2147351239"
+      ]
+    },
+    {
+      "q": "defective mains plug and fuse causing overheating and fire",
+      "hit": false,
+      "found": [],
+      "expected": [
+        "eu-SR-01370-26",
+        "eu-SR-01132-26",
+        "eu-SR-02631-26"
+      ],
+      "relevant_in_top10": 0,
+      "relevance_precision_at10": 0,
+      "top10": [
+        "eu-SR-02642-26",
+        "saferproducts-20190510-E1D03-2147381060",
+        "eu-SR-01368-26",
+        "saferproducts-20250222-1861A-2147332982",
+        "saferproducts-20151218-D338D-2147425727",
+        "saferproducts-20240313-9E94E-2147340411",
+        "saferproducts-20251019-B76FE-2147326967",
+        "saferproducts-20111021-7EE04-2147474084",
+        "saferproducts-20231114-A0A71-2147344022",
+        "saferproducts-20230228-12EE8-2147349175"
+      ]
+    },
+    {
+      "q": "ice cream maker motor overheating with burning smell and smoke",
+      "hit": true,
+      "found": [
+        "saferproducts-20251222-6BE9B-2147325299",
+        "saferproducts-20260410-57218-2147320739"
+      ],
+      "expected": [
+        "saferproducts-20260920-9FF27-2147309535",
+        "saferproducts-20260410-57218-2147320739",
+        "saferproducts-20251222-6BE9B-2147325299"
+      ],
+      "relevant_in_top10": 3,
+      "relevance_precision_at10": 0.3,
+      "top10": [
+        "saferproducts-20251222-6BE9B-2147325299",
+        "saferproducts-20250624-1325F-2147330205",
+        "saferproducts-20260410-57218-2147320739",
+        "saferproducts-20120226-3CD56-2147469789",
+        "saferproducts-20241231-E98A5-2147334233",
+        "saferproducts-20131008-431C3-2147451135",
+        "saferproducts-20220208-4A41E-2147357662",
+        "saferproducts-20261004-232E2-2147308375",
+        "saferproducts-20110912-3B1CE-2147475388",
+        "saferproducts-20150607-964B2-2147431273"
+      ]
+    },
+    {
+      "q": "blender blades run when the lid or jar is not attached",
+      "hit": false,
+      "found": [],
+      "expected": [
+        "saferproducts-20260925-08A5E-2147309035",
+        "cpsc-10230",
+        "eu-SR-02283-26"
+      ],
+      "relevant_in_top10": 3,
+      "relevance_precision_at10": 0.3,
+      "top10": [
+        "saferproducts-20110807-593F3-2147476474",
+        "saferproducts-20140615-C9E66-2147443673",
+        "saferproducts-20120717-4AF75-2147465605",
+        "saferproducts-20131221-5ECB0-2147448867",
+        "saferproducts-20151120-BE549-2147426496",
+        "saferproducts-20190124-9BBD8-2147383117",
+        "saferproducts-20170724-9DADB-2147398716",
+        "saferproducts-20130508-BA8B8-1325705",
+        "saferproducts-20190320-E755F-2147382075",
+        "saferproducts-20240311-F068D-2147340462"
+      ]
+    },
+    {
+      "q": "portable blender USB charging port melted",
+      "hit": true,
+      "found": [
+        "saferproducts-20260919-F910A-2147309605"
+      ],
+      "expected": [
+        "saferproducts-20260919-F910A-2147309605"
+      ],
+      "relevant_in_top10": 9,
+      "relevance_precision_at10": 0.9,
+      "top10": [
+        "saferproducts-20260919-F910A-2147309605",
+        "saferproducts-20231023-57A11-2147344501",
+        "saferproducts-20220809-C20F2-2147354500",
+        "saferproducts-20240716-2B7C0-2147337944",
+        "saferproducts-20231219-7A120-2147343352",
+        "saferproducts-20250227-0675C-2147332880",
+        "saferproducts-20250616-ADCEB-2147330437",
+        "saferproducts-20220718-86C34-2147354929",
+        "saferproducts-20241002-13E37-2147336196",
+        "saferproducts-20240528-BE03C-2147338956"
+      ]
+    },
+    {
+      "q": "sandwich maker earthing conductor fault electric shock",
+      "hit": true,
+      "found": [
+        "eu-SR-02858-26"
+      ],
+      "expected": [
+        "eu-SR-02858-26",
+        "eu-SR-01967-26"
+      ],
+      "relevant_in_top10": 5,
+      "relevance_precision_at10": 0.5,
+      "top10": [
+        "eu-SR-02858-26",
+        "saferproducts-20241227-9D135-2147334337",
+        "saferproducts-20151218-D338D-2147425727",
+        "saferproducts-20230822-3C0C1-2147345639",
+        "eu-A12-01256-22",
+        "saferproducts-20160123-9AC70-2147424394",
+        "saferproducts-20170624-0D5CD-2147399445",
+        "saferproducts-20160925-A0758-2147413724",
+        "saferproducts-20260422-16ACA-2147320250",
+        "saferproducts-20110625-83E57-2147477851"
+      ]
+    }
+  ]
+}

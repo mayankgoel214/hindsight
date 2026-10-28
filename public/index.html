@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>Hindsight — DFMEA search across every public product-safety record</title>
+<meta name="description" content="Type a product concept or part. Get every similar real-world failure across all brands, grouped by failure mode, with a quoted source on every claim.">
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230f172a'/><text x='16' y='22' text-anchor='middle' font-family='ui-sans-serif,system-ui' font-size='18' font-weight='700' fill='%23fff'>H</text></svg>">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#/search" aria-label="Hindsight home">
+    <span class="mark" aria-hidden="true">H</span>
+    <span class="word">Hindsight</span>
+    <span class="tag">CONCEPT</span>
+  </a>
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button role="tab" data-view="search" aria-selected="true">Search</button>
+    <button role="tab" data-view="categories" aria-selected="false">Categories</button>
+    <button role="tab" data-view="checklist" aria-selected="false">Checklist</button>
+    <button role="tab" data-view="accuracy" aria-selected="false">Accuracy</button>
+    <button role="tab" data-view="about" aria-selected="false">About &amp; Data</button>
+  </nav>
+  <div class="top-right">
+    <button class="icon" id="themeBtn" aria-label="Toggle light/dark" title="Toggle light/dark">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="app">
+  <!-- Search view -->
+  <section id="view-search" class="view" aria-labelledby="search-h">
+    <div class="page-head">
+      <h1 id="search-h">Has this failed before?</h1>
+      <p class="lede">Describe a part, concept, or failure in plain words. Hindsight searches
+        5,179 public product-safety records (recalls, Health Canada recalls, EU Safety Gate alerts,
+        and unverified SaferProducts.gov consumer reports) and groups the matches by failure mode.
+        Every claim links to its source.</p>
+    </div>
+
+    <form id="searchForm" class="searchbar" autocomplete="off">
+      <div class="search-input-wrap">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="q" name="q" placeholder="e.g. pressure cooker lid opens while hot"
+          minlength="3" maxlength="160" required aria-label="Search query">
+        <button type="submit" class="btn primary">Search</button>
+      </div>
+      <div class="chips" id="exampleChips" aria-label="Example searches">
+        <button type="button" class="chip">pressure cooker lid opens while hot</button>
+        <button type="button" class="chip">glass air fryer basket shatters</button>
+        <button type="button" class="chip">blender blade assembly comes loose</button>
+        <button type="button" class="chip">espresso machine steam wand burn</button>
+        <button type="button" class="chip">kettle handle separates</button>
+        <button type="button" class="chip">ice cream maker blade</button>
+      </div>
+    </form>
+
+    <aside class="filters" id="filters" hidden>
+      <details open>
+        <summary>Filters</summary>
+        <div class="filter-grid">
+          <label><span class="fl">Category</span>
+            <select id="fCategory"><option value="">All</option></select>
+          </label>
+          <label><span class="fl">Source</span>
+            <select id="fSource">
+              <option value="">All</option>
+              <option value="verified">Verified only (recalls + alerts)</option>
+              <option value="unverified">Unverified consumer reports only</option>
+            </select>
+          </label>
+          <label><span class="fl">Brand</span>
+            <select id="fBrand"><option value="">All</option></select>
+          </label>
+          <label><span class="fl">Years</span>
+            <span class="years">
+              <input type="number" id="fYearMin" min="2000" max="2030" placeholder="min" aria-label="Min year">
+              <input type="number" id="fYearMax" min="2000" max="2030" placeholder="max" aria-label="Max year">
+            </span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="fSharkninja">
+            <span>Show SharkNinja records only</span>
+            <small class="hint">(a neutral toggle — SharkNinja is one brand of many)</small>
+          </label>
+        </div>
+      </details>
+    </aside>
+
+    <div id="searchStatus" class="status" aria-live="polite"></div>
+
+    <!-- Shown before any search is run -->
+    <section id="featured" class="featured">
+      <h2>Biggest failure patterns in the data</h2>
+      <p class="muted">Click any pattern to pre-fill a search. Ranked by regulator actions + serious injuries.</p>
+      <div id="featuredGrid" class="featured-grid"></div>
+    </section>
+
+    <div id="searchResults" class="results" aria-live="polite"></div>
+    <section id="similarRecords" class="similar" hidden>
+      <h2>Most similar individual records</h2>
+      <p class="muted">The ten closest matches by AI similarity, without grouping. Use this when you're hunting one specific record.</p>
+      <ol id="similarList" class="rec-list similar-list"></ol>
+    </section>
+
+    <section id="dfmeaRows" class="dfmea-wrap" hidden>
+      <header class="section-head">
+        <h2>DFMEA rows</h2>
+        <div class="section-actions">
+          <button class="btn ghost small" id="copyTsv">Copy TSV</button>
+          <button class="btn ghost small" id="downloadCsv">Download CSV</button>
+        </div>
+      </header>
+      <p class="muted">Paste the TSV into Excel/SharePoint; the CSV is RFC 4180.
+        The severity column is a <em>hint</em> derived from the injury profile of the matching
+        records — it is not a severity score for your design. Replace with a verified
+        severity rating in your own DFMEA.</p>
+      <div class="table-wrap">
+        <table id="dfmeaTable" class="dfmea">
+          <thead>
+            <tr>
+              <th>Function</th>
+              <th>Failure mode</th>
+              <th>Cause</th>
+              <th>Effect / Hazard</th>
+              <th>Severity hint</th>
+              <th>Evidence</th>
+              <th>Suggested verification</th>
+              <th>Source(s)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+
+  <!-- Categories view -->
+  <section id="view-categories" class="view" hidden aria-labelledby="categories-h">
+    <div class="page-head">
+      <h1 id="categories-h">Category risk profiles</h1>
+      <p class="lede">For each v1 category, the top failure modes seen in the data, ordered by
+        the worst injuries reported. Click a mode to see its records.</p>
+    </div>
+    <div id="categoryGrid" class="cat-grid"></div>
+  </section>
+
+  <!-- Checklist view -->
+  <section id="view-checklist" class="view" hidden aria-labelledby="checklist-h">
+    <div class="page-head">
+      <h1 id="checklist-h">Design-review checklist</h1>
+      <p class="lede">P0, P2, DVT, TRA are SharkNinja's own program-gate names (from their public job postings).
+        Pick a category and the checklist is built from the failure patterns in Hindsight's data for that category.</p>
+    </div>
+    <div class="checklist-controls">
+      <label><span class="fl">Category</span>
+        <select id="cCategory"></select>
+      </label>
+      <label><span class="fl">Gate</span>
+        <select id="cGate">
+          <option value="P0">P0 — Program start</option>
+          <option value="P2">P2 — Design intent frozen</option>
+          <option value="DVT">DVT — Design verification</option>
+          <option value="TRA">TRA — Technical readiness</option>
+        </select>
+      </label>
+    </div>
+    <div id="checklistBody" class="checklist"></div>
+  </section>
+
+  <!-- Accuracy view -->
+  <section id="view-accuracy" class="view" hidden aria-labelledby="accuracy-h">
+    <div class="page-head">
+      <h1 id="accuracy-h">Accuracy</h1>
+      <p class="lede">Hindsight uses AI to extract one failure mode, cause, effect and
+        a verifying quote from each record. Those labels drive the search index. Here is
+        how often it is right, measured on hand-labeled records.</p>
+    </div>
+    <div id="accuracyBody"></div>
+  </section>
+
+  <!-- About view -->
+  <section id="view-about" class="view" hidden aria-labelledby="about-h">
+    <div class="page-head">
+      <h1 id="about-h">About &amp; data</h1>
+      <p class="lede">Hindsight is a concept tool. It is not affiliated with SharkNinja.
+        Everything on this site is built from public, free sources.</p>
+    </div>
+    <div class="about-grid">
+      <article class="card">
+        <h2>What it is</h2>
+        <p>A DFMEA-oriented search over every public product-safety record for the small-kitchen-appliance
+          categories SharkNinja's Ninja NPD team ships: pressure &amp; multi-cookers, air fryers, blenders,
+          ice-cream &amp; frozen-drink makers, coffee &amp; espresso, kettles, countertop ovens &amp; toasters, grills.</p>
+        <p>Type a part or concept; the AI translates your words into a search vector,
+          we score it against 5,179 records, and group the matches by failure mode so you can read them
+          as patterns rather than one-off incidents.</p>
+      </article>
+      <article class="card">
+        <h2>Where the data comes from</h2>
+        <ul class="data-sources">
+          <li><a href="https://www.cpsc.gov/Recalls" target="_blank" rel="noopener">CPSC recalls</a> — verified U.S. regulator actions.</li>
+          <li><a href="https://recalls-rappels.canada.ca/en/" target="_blank" rel="noopener">Health Canada recalls</a> — verified Canadian regulator actions.</li>
+          <li><a href="https://ec.europa.eu/safety-gate-alerts/" target="_blank" rel="noopener">EU Safety Gate</a> — verified EU alerts.</li>
+          <li><a href="https://www.saferproducts.gov/" target="_blank" rel="noopener">SaferProducts.gov consumer reports</a> — <strong>unverified consumer claims</strong>, always labeled as such in the UI. They are useful signal, not proof.</li>
+        </ul>
+        <p class="muted">Open government data; each record on this site links back to its source so you can read the original.</p>
+      </article>
+      <article class="card">
+        <h2>What "unverified consumer report" means</h2>
+        <p>Anyone can file a report on SaferProducts.gov. The report is published after a short review
+          but it is not independently investigated. Hindsight shows these reports because they are the
+          largest signal of real-world consumer use, but it never counts them as recalls, and it
+          labels them "unverified" on every surface they appear in.</p>
+      </article>
+      <article class="card">
+        <h2>Bring your own data later</h2>
+        <p>The record schema (hazard text, failure mode, cause, effect, quote, source) is the same
+          shape as a DFMEA row. The pipeline accepts your own FMEAs, DVT/EMC results, field returns
+          and lessons-learned — once that private data lands, every search covers your history too.
+          Public data makes the demo useful on day one.</p>
+      </article>
+      <article class="card">
+        <h2>Design notes</h2>
+        <ul>
+          <li>Every claim links to a record. "No matching record" instead of guessing.</li>
+          <li>SharkNinja records appear in the same neutral format as every other brand.</li>
+          <li>Patterns show <strong>regulator actions</strong> (recalls + safety alerts) and <strong>unverified consumer reports</strong> as separate numbers, never combined.</li>
+          <li>Everything runs client-side after one search; the server is only there to embed the query.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h2>Not affiliated</h2>
+        <p>Hindsight is a concept built by <a href="https://mayank-goel.com" rel="noopener">Mayank Goel</a>.
+          Not affiliated with SharkNinja, Ninja, CPSC, Health Canada or the European Commission.</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <small>Hindsight · concept · not affiliated with SharkNinja ·
+    data from CPSC, Health Canada, EU Safety Gate, SaferProducts.gov ·
+    AI-assisted search; every claim links to its source</small>
+</footer>
+
+<template id="recordTpl">
+  <li class="rec">
+    <header class="rec-head">
+      <span class="rec-badges"></span>
+      <a class="rec-source" target="_blank" rel="noopener">source</a>
+    </header>
+    <div class="rec-product"></div>
+    <blockquote class="rec-quote"></blockquote>
+    <div class="rec-meta"></div>
+  </li>
+</template>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>

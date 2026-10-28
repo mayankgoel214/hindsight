@@ -1,0 +1,17 @@
+*
+!public/
+!public/**
+!api/
+!api/**
+!package.json
+!vercel.json
+!.vercelignore
+
+# Explicit excludes — these must NEVER deploy
+data/
+data/raw/
+data/cache/
+scripts/
+docs/
+test/
+.playwright-mcp/

@@ -1,0 +1,18 @@
+{
+  "name": "hindsight",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "description": "Hindsight data pipeline: product-safety records -> DFMEA-ready failure patterns with a verified quote on every claim.",
+  "scripts": {
+    "normalize": "node scripts/normalize.mjs",
+    "extract": "node --env-file=../Portfolio/.env.local scripts/extract.mjs",
+    "embed": "node --env-file=../Portfolio/.env.local scripts/embed.mjs",
+    "patterns": "node --env-file=../Portfolio/.env.local scripts/patterns.mjs",
+    "evaluate": "node --env-file=../Portfolio/.env.local scripts/evaluate.mjs",
+    "pipeline": "npm run normalize && npm run extract && npm run embed && npm run patterns && npm run evaluate",
+    "stats": "node scripts/stats.mjs",
+    "test": "node --test"
+  }
+}

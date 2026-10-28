@@ -1,0 +1,19 @@
+node_modules/
+.env
+.env.*
+!.env.example
+
+# Raw source data (regenerable by the fetch scripts); keep public/data only.
+data/raw/
+data/cache/
+data/*.log
+data/records.json
+
+# Build / tool noise
+.vercel/
+.DS_Store
+*.log
+.playwright-mcp/
+
+# Scratch
+/tmp/
