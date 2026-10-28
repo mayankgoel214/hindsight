@@ -11,19 +11,37 @@ import {
 
 export const config = { maxDuration: 20 }
 
-function cors(res) {
-  res.setHeader("Access-Control-Allow-Origin", "*")
+// Allowed cross-origin callers. Same-origin requests don't need CORS at all.
+const CORS_ALLOW = new Set([
+  "https://hindsight.mayank-goel.com",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+])
+
+function cors(req, res) {
+  const origin = String(req.headers?.origin || "")
+  if (origin && CORS_ALLOW.has(origin)) res.setHeader("Access-Control-Allow-Origin", origin)
+  res.setHeader("Vary", "Origin")
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS")
   res.setHeader("Access-Control-Allow-Headers", "content-type")
   res.setHeader("Cache-Control", "no-store")
 }
 
+// Hard cap on request body size. Query is bounded (160 chars + k + wrappers);
+// 4 KiB is comfortably more than a well-formed request and immediately rules
+// out anyone trying to shove bulk through this endpoint.
+const MAX_BODY = 4096
+
 function safeParse(s) { try { return JSON.parse(s) } catch { return null } }
 
 export default async function handler(req, res) {
-  cors(res)
+  cors(req, res)
   if (req.method === "OPTIONS") return res.status(204).end()
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" })
+
+  // Reject outsized bodies before we parse / before any downstream work.
+  const cl = Number(req.headers?.["content-length"])
+  if (Number.isFinite(cl) && cl > MAX_BODY) return res.status(413).json({ error: "payload too large" })
 
   const body = typeof req.body === "string" ? safeParse(req.body) : req.body
   const invalid = validateSearch(body)
@@ -55,8 +73,9 @@ export default async function handler(req, res) {
   const apiKey = clean(process.env.GEMINI_API_KEY)
   if (!apiKey) return res.status(200).json({ fallback: true, reason: "unavailable" })
 
-  // Query cache (per lambda instance). Keyed by normalized text only.
-  const ck = queryCacheKey(q)
+  // Query cache (per lambda instance). Keyed by normalized text AND k so a
+  // request for 200 results doesn't get a cached 5-result response (or vice versa).
+  const ck = queryCacheKey(q, k)
   const cached = cacheGet(ck)
   if (cached) {
     return res.status(200).json({ ...cached, cached: true, left })
@@ -72,7 +91,10 @@ export default async function handler(req, res) {
 
   const idx = await loadIndex()
   if (qvec.length !== idx.dims) {
-    return res.status(500).json({ error: `dim mismatch: ${qvec.length} vs ${idx.dims}` })
+    // Log the specifics server-side (via console) but return a generic error
+    // so a probing caller can't learn the index's internal dimension.
+    console.error(`[hindsight/search] dim mismatch qvec=${qvec.length} idx=${idx.dims}`)
+    return res.status(500).json({ error: "internal error" })
   }
   const hits = topK({
     queryVec: qvec, vecs: idx.vecs, dims: idx.dims, scale: idx.scale,

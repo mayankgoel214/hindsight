@@ -29,7 +29,10 @@ function computeGroup(cat, fm, recs) {
   let injuredReports = 0, totalUnits = 0;
   for (const r of recs) {
     byKind[r.kind] = (byKind[r.kind] || 0) + 1;
-    for (const b of r.brands) if (b) brands.set(b, (brands.get(b) || 0) + 1);
+    // Prefer the canonical display name so topBrands matches what the UI shows
+    // (and so manufacturer variants collapse into one entry).
+    const brandList = (r.brands_canon?.length ? r.brands_canon.map((c) => c.display) : r.brands) || [];
+    for (const b of brandList) if (b) brands.set(b, (brands.get(b) || 0) + 1);
     const y = yearOf(r.date); if (y) years.push(y);
     injuries[r.extract.injury] = (injuries[r.extract.injury] || 0) + 1;
     if (r.extract.injury !== "none") injuredReports++;
@@ -92,16 +95,28 @@ Write:
 }
 
 // Reject any integer in the text that is not one of the computed numbers for
-// this group (counts, years, units). Prevents fabricated statistics.
+// this group (counts, years, units). Prevents fabricated statistics. Standard
+// part numbers (IEC/UL 60335, 60335-2-15, 60601, 60601-1, …) are allowed.
+const STANDARD_NUMS = new Set(["60335", "60601"]);
+const STANDARD_PART = /^2-\d{1,3}$/;
+function isStandardNumber(n) {
+  return STANDARD_NUMS.has(String(n)) || STANDARD_PART.test(String(n));
+}
 function numbersOk(text, g) {
   const allowed = new Set([
     g.total, g.verifiedActions, g.unverifiedReports, g.injuredReports, g.unitsAffected,
     ...(g.years || []), ...Object.values(g.counts), ...Object.values(g.injuries),
   ].filter((n) => n != null).map(String));
-  const nums = (text.match(/\d[\d,]*/g) || []).map((s) => s.replace(/,/g, ""));
+  // Pull "60335-2-15"-style tokens whole so we don't split them into 60335 / 2 / 15.
+  const stripped = text.replace(/\b(?:IEC|UL|EN)?\s*\/?\s*(?:IEC|UL|EN)?\s*\d{3,5}(?:-\d+)*/g, (m) => {
+    // Keep only well-known standards; drop everything else from the text so
+    // the number check doesn't see them.
+    return /\b60335|60601\b/.test(m) ? "" : m;
+  });
+  const nums = (stripped.match(/\d[\d,]*/g) || []).map((s) => s.replace(/,/g, ""));
   for (const n of nums) {
     if (allowed.has(n)) continue;
-    if (/60335|2-\d/.test(text)) { /* standard part numbers handled separately */ }
+    if (isStandardNumber(n)) continue;
     return false;
   }
   return true;
@@ -123,11 +138,17 @@ async function main() {
     const key = `${cat}|${fm}`;
     (groups.get(key) || groups.set(key, []).get(key)).push(r);
   }
+  // Keep every pattern — even a single-record one. A one-off recall is still
+  // a real failure the engineer needs to see. For single-record patterns we
+  // skip the LLM mitigation/verification write-up (not enough signal to
+  // ground against, and it'd cost tokens for marginal value); the UI shows
+  // them with just the counts + the one example.
   const computed = [];
   for (const [key, recs] of groups) {
     const [cat, fm] = key.split("|");
-    if (recs.length < 2) continue; // a pattern needs at least two records
-    computed.push(computeGroup(cat, fm, recs));
+    const g = computeGroup(cat, fm, recs);
+    g._singleRecord = recs.length < 2;
+    computed.push(g);
   }
   computed.sort((a, b) => (INJURY_RANK[worst(b.injuries)] - INJURY_RANK[worst(a.injuries)]) || (b.total - a.total));
   log.info(`${computed.length} patterns (category x failure_mode, >=2 records)`);
@@ -135,7 +156,7 @@ async function main() {
   const cost = makeCost();
   let dropped = 0, done = 0;
   await pool(computed, 4, async (g) => {
-    if (g._examples.length === 0) { g.mitigation = null; g.verification = null; return; }
+    if (g._examples.length === 0 || g._singleRecord) { g.mitigation = null; g.verification = null; g.standard = g.standardHint ? `Check against ${g.standardHint}.` : null; return; }
     const r = await gen(g, apiKey, cost);
     let m = r?.mitigation || "", v = r?.verification || "";
     if (m && !numbersOk(m, g)) { const r2 = await gen(g, apiKey, cost); if (r2 && numbersOk(r2.mitigation, g)) m = r2.mitigation; else { m = ""; dropped++; } }
@@ -147,7 +168,7 @@ async function main() {
     if (done % 20 === 0 || done === computed.length) log.info(`${done}/${computed.length} | ${cost.summary()}`);
   });
 
-  for (const g of computed) { delete g._examples; delete g.standardHint; }
+  for (const g of computed) { delete g._examples; delete g.standardHint; delete g._singleRecord; }
   const out = {
     generatedAt: new Date().toISOString().slice(0, 10),
     model: TEXT_MODEL,

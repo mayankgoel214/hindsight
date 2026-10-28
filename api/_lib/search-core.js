@@ -130,14 +130,20 @@ export async function checkLimits(ip) {
   const who = createHash("sha256").update(`hindsight:${ip}`).digest("hex").slice(0, 24)
   const ipKey = `hindsight:rl:ip:${who}:${hour}`
   const dayKey = `hindsight:rl:day:${day}`
-  const res = await redis([
+  // Two-phase: INCR the per-IP counter first; if that exceeds its cap, deny
+  // without touching the global counter so a hammering visitor can't exhaust
+  // the global daily quota on their denied requests.
+  const ipRes = await redis([
     ["INCR", ipKey], ["EXPIRE", ipKey, "3600", "NX"],
+  ])
+  const ipCount = Number(ipRes[0]?.result)
+  if (ipCount > PER_IP_HOUR) return { ok: false, reason: "visitor_limit" }
+  // Only count against the global daily quota when the IP check passed.
+  const dayRes = await redis([
     ["INCR", dayKey], ["EXPIRE", dayKey, "172800", "NX"],
   ])
-  const ipCount = Number(res[0]?.result)
-  const dayCount = Number(res[2]?.result)
+  const dayCount = Number(dayRes[0]?.result)
   if (dayCount > GLOBAL_DAY) return { ok: false, reason: "daily_cap" }
-  if (ipCount > PER_IP_HOUR) return { ok: false, reason: "visitor_limit" }
   return { ok: true, left: Math.max(0, PER_IP_HOUR - ipCount) }
 }
 
@@ -149,8 +155,8 @@ export function clientIp(req) {
   return xff.at(-1) || req.socket?.remoteAddress || "unknown"
 }
 
-export function queryCacheKey(q) {
-  return createHash("sha256").update(`q:${q.trim().toLowerCase()}`).digest("hex").slice(0, 24)
+export function queryCacheKey(q, k) {
+  return createHash("sha256").update(`q:${q.trim().toLowerCase()}|k:${k || 0}`).digest("hex").slice(0, 24)
 }
 
 /* ── Simple in-memory query cache (per lambda instance) ───────────────── */

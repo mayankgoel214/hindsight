@@ -16,7 +16,9 @@ const CATEGORY_KEYWORDS = {
   air_fryer: [/\bair[\s-]?fry(?:er|ing)?\b/i, /\bairfryer\b/i],
   pressure_multi_cooker: [/\bpressure\s*cooker\b/i, /\bmulti[\s-]?cooker\b/i, /\binstant\s*pot\b/i, /\bfoodi\b/i, /\bcrock[\s-]?pot\b/i],
   blender_food_processor: [/\bblender\b/i, /\bfood\s*processor\b/i, /\bjuicer\b/i, /\bblendjet\b/i, /\btumbler\s*blender\b/i],
-  coffee_maker: [/\bcoffee\b/i, /\bespresso\b/i, /\bbrewer\b/i, /\bkeurig\b/i, /\bcafé\b/i, /\bcafe\b/i, /\bk[-\s]?cup\b/i, /\bpod\b/i],
+  // Keep /\bbrewer\b/ and /\bpod\b/ narrow: a bare "brewer" or "pod" could match
+  // kettle-brewers or pressure-cooker pods, so require a coffee context.
+  coffee_maker: [/\bcoffee\b/i, /\bespresso\b/i, /\bkeurig\b/i, /\bcafé\b/i, /\bcafe\b/i, /\bk[-\s]?cup\b/i, /\bcoffee\s*brewer\b/i, /\bsingle[-\s]?serve\b/i, /\bcoffee\s*pod\b/i, /\bk[-\s]?pod\b/i],
   kettle: [/\bkettle\b/i, /\belectric\s*kettle\b/i],
   oven_toaster: [/\btoaster\b/i, /\btoaster\s*oven\b/i, /\bcountertop\s*oven\b/i, /\bconvection\s*oven\b/i],
   grill: [/\bgrill\b/i, /\bgriddle\b/i, /\bpellet\b/i, /\bwoodfire\b/i, /\bbarbecue\b/i, /\bbbq\b/i],

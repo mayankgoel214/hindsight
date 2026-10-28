@@ -122,10 +122,17 @@ function patternKey(cat, fm, label) {
 }
 const INJURY_RANK = { none: 0, minor: 1, medical: 2, serious: 3 }
 function worstInjury(injuries) {
-  if (injuries.serious) return "serious"
-  if (injuries.medical) return "medical"
-  if (injuries.minor) return "minor"
+  const inj = injuries || {}
+  if (inj.serious) return "serious"
+  if (inj.medical) return "medical"
+  if (inj.minor) return "minor"
   return "none"
+}
+// Only http(s) hrefs reach the DOM. Anything else collapses to '#' so a
+// malformed/encoded source URL cannot smuggle a javascript: or data: scheme.
+function safeHref(u) {
+  const s = String(u || "").trim()
+  return /^https?:\/\//i.test(s) ? s : "#"
 }
 function brandDisplay(rec) {
   if (rec.brands_canon?.length) return rec.brands_canon[0].display
@@ -377,34 +384,99 @@ function renderSearchResults() {
       <p class="muted">Loosen a filter to see all matches for "${esc(state.lastQuery)}".</p></div>`
     $("#dfmeaRows").hidden = true; $("#similarRecords").hidden = true; return
   }
+  // All record ids currently allowed by the filters — used by renderPattern /
+  // buildDfmeaRows to make stats + examples filter-aware (not just hits).
+  const filteredRecIds = allowedRecordIdSet()
   const groups = aggregateByPattern(hits).slice(0, PATTERN_LIMIT)
-  for (const g of groups) container.appendChild(renderPattern(g))
-  renderDfmea(groups)
+  for (const g of groups) container.appendChild(renderPattern(g, filteredRecIds))
+  renderDfmea(groups, filteredRecIds)
   renderSimilarRecords(hits.slice(0, SIMILAR_RECORDS))
 }
 
-function renderPattern(g) {
+// Full set of records (not just hits) that pass the active filters.
+// Used by filter-aware stats + examples so a pattern card reflects the slice
+// the user is looking at, not the universe.
+function allowedRecordIdSet() {
+  if (!filtersActive()) return null
+  const cat = $("#fCategory").value
+  const src = $("#fSource").value
+  const brand = $("#fBrand").value
+  const ymin = Number($("#fYearMin").value) || null
+  const ymax = Number($("#fYearMax").value) || null
+  const sharkOnly = $("#fSharkninja").checked
+  const out = new Set()
+  for (const r of state.meta?.records || []) {
+    if (cat && r.category !== cat) continue
+    if (src === "verified" && !r.verified) continue
+    if (src === "unverified" && r.verified) continue
+    if (sharkOnly && !r.sharkninja) continue
+    if (brand && !(r.brands_canon || []).some((b) => b.display === brand)) continue
+    if (ymin && (r.year || 0) < ymin) continue
+    if (ymax && (r.year || 9999) > ymax) continue
+    out.add(r.id)
+  }
+  return out
+}
+
+function filtersActive() {
+  return !!($("#fCategory").value || $("#fSource").value || $("#fBrand").value ||
+    $("#fYearMin").value || $("#fYearMax").value || $("#fSharkninja").checked)
+}
+// Compute pattern stats from the subset of records actually in view: when a
+// filter is on we recompute from the filtered record set and label the chips
+// "with filters"; otherwise we use the full-pattern aggregates from patterns.json.
+function statsForGroup(g, filteredRecIds) {
   const p = g.pattern
-  const examples = examplesFor(g.key, g.matchedIds)
-  const years = p.years ? `${p.years[0]}–${p.years[1]}` : ""
-  const units = p.unitsAffected ? `~${p.unitsAffected.toLocaleString()} units` : ""
+  const inj = p.injuries || { none: 0, minor: 0, medical: 0, serious: 0 }
+  if (!filtersActive()) {
+    return {
+      verifiedActions: p.verifiedActions, unverifiedReports: p.unverifiedReports,
+      injuries: inj, years: p.years,
+      unitsAffected: p.unitsAffected, isFiltered: false,
+    }
+  }
+  const ids = state.recordsByPattern.get(g.key) || []
+  const filteredSet = filteredRecIds
+  const recs = ids.map((id) => state.byId.get(id)).filter((r) => r && filteredSet.has(r.id))
+  const injuries = { none: 0, minor: 0, medical: 0, serious: 0 }
+  let va = 0, ur = 0, years = [], units = 0
+  for (const r of recs) {
+    injuries[r.injury || "none"] = (injuries[r.injury || "none"] || 0) + 1
+    if (r.verified) va++; else ur++
+    if (r.year) years.push(r.year)
+    if (r.units) units += r.units
+  }
+  return {
+    verifiedActions: va, unverifiedReports: ur, injuries,
+    years: years.length ? [Math.min(...years), Math.max(...years)] : null,
+    unitsAffected: units || null, isFiltered: true,
+  }
+}
+
+function renderPattern(g, filteredRecIds) {
+  const p = g.pattern
+  const s = statsForGroup(g, filteredRecIds)
+  const examples = examplesFor(g.key, g.matchedIds, filteredRecIds)
+  const years = s.years ? `${s.years[0]}–${s.years[1]}` : ""
+  const units = s.unitsAffected ? `~${s.unitsAffected.toLocaleString()} units` : ""
   const topBrands = (p.topBrands || []).slice(0, 4).map((b) => b.name).join(" · ")
   const injChips = [
-    p.injuries.serious ? `<span class="stat injury-serious">${p.injuries.serious} serious</span>` : "",
-    p.injuries.medical ? `<span class="stat injury-medical">${p.injuries.medical} medical</span>` : "",
-    p.injuries.minor ? `<span class="stat injury-minor">${p.injuries.minor} minor</span>` : "",
+    s.injuries.serious ? `<span class="stat injury-serious">${s.injuries.serious} serious</span>` : "",
+    s.injuries.medical ? `<span class="stat injury-medical">${s.injuries.medical} medical</span>` : "",
+    s.injuries.minor ? `<span class="stat injury-minor">${s.injuries.minor} minor</span>` : "",
   ].filter(Boolean).join("")
+  const flabel = s.isFiltered ? " (with filters)" : ""
   const wrap = document.createElement("section")
   wrap.className = "group pattern"
   wrap.innerHTML = `
     <header class="group-head">
       <div class="group-title">
         <div class="fm">${esc(fmNice(p.failure_mode, p.failure_mode_label))}</div>
-        <div class="cat">${esc(catNice(p.category))} · full pattern</div>
+        <div class="cat">${esc(catNice(p.category))} · ${s.isFiltered ? "filtered subset" : "full pattern"}</div>
       </div>
       <div class="group-stats">
-        <span class="stat verified">${p.verifiedActions} regulator action${p.verifiedActions === 1 ? "" : "s"}</span>
-        <span class="stat unverified">${p.unverifiedReports.toLocaleString()} unverified report${p.unverifiedReports === 1 ? "" : "s"}</span>
+        <span class="stat verified">${s.verifiedActions} regulator action${s.verifiedActions === 1 ? "" : "s"}${flabel}</span>
+        <span class="stat unverified">${s.unverifiedReports.toLocaleString()} unverified report${s.unverifiedReports === 1 ? "" : "s"}${flabel}</span>
         ${injChips}
         ${years ? `<span class="stat">${years}</span>` : ""}
         ${units ? `<span class="stat">${units}</span>` : ""}
@@ -425,21 +497,24 @@ function renderPattern(g) {
   return wrap
 }
 
-function examplesFor(key, matchedIds) {
+function examplesFor(key, matchedIds, filteredRecIds) {
   const ids = state.recordsByPattern.get(key) || []
-  const recs = ids.map((id) => state.byId.get(id)).filter(Boolean)
-  const verified = recs.filter((r) => r.verified)
-    .sort((a, b) => (INJURY_RANK[b.injury] - INJURY_RANK[a.injury]) || ((b.units || 0) - (a.units || 0)))
-    .slice(0, VERIFIED_EXAMPLES)
-  const unverified = recs.filter((r) => !r.verified && matchedIds.has(r.id))
-    .sort((a, b) => (INJURY_RANK[b.injury] - INJURY_RANK[a.injury]))
-    .slice(0, UNVERIFIED_EXAMPLES)
-  // If no matched unverified (rare), fall back to the top-injury unverified for the pattern.
-  if (!unverified.length) {
-    const u = recs.filter((r) => !r.verified)
-      .sort((a, b) => (INJURY_RANK[b.injury] - INJURY_RANK[a.injury])).slice(0, UNVERIFIED_EXAMPLES)
-    return { verified, unverified: u }
-  }
+  // Respect the active filters: only consider records that are in the filtered set
+  // (which is a superset of matched hits plus all other records that pass the filter).
+  const allowed = filteredRecIds || null
+  const recs = ids.map((id) => state.byId.get(id)).filter((r) => r && (!allowed || allowed.has(r.id)))
+  // Verified examples: prefer the ones in the current hit set (actually matched
+  // by the query), then fall through to the rest of the verified records for the
+  // pattern. Sort within each tier by worst injury then units.
+  const sortV = (a, b) => (INJURY_RANK[b.injury] - INJURY_RANK[a.injury]) || ((b.units || 0) - (a.units || 0))
+  const vMatched = recs.filter((r) => r.verified && matchedIds.has(r.id)).sort(sortV)
+  const vOther = recs.filter((r) => r.verified && !matchedIds.has(r.id)).sort(sortV)
+  const verified = [...vMatched, ...vOther].slice(0, VERIFIED_EXAMPLES)
+  // Unverified: matched hits first, then fall back to the worst-injury rest.
+  const sortU = (a, b) => (INJURY_RANK[b.injury] - INJURY_RANK[a.injury])
+  const uMatched = recs.filter((r) => !r.verified && matchedIds.has(r.id)).sort(sortU)
+  const uOther = recs.filter((r) => !r.verified && !matchedIds.has(r.id)).sort(sortU)
+  const unverified = [...uMatched, ...uOther].slice(0, UNVERIFIED_EXAMPLES)
   return { verified, unverified }
 }
 
@@ -456,7 +531,7 @@ function renderRecord(rec, isVerified) {
   li.innerHTML = `
     <header class="rec-head">
       <span class="rec-badges">${badges.join("")}</span>
-      <a class="rec-source" href="${esc(rec.url)}" target="_blank" rel="noopener">${esc(sourceLabel(rec))} ↗</a>
+      <a class="rec-source" href="${esc(safeHref(rec.url))}" target="_blank" rel="noopener">${esc(sourceLabel(rec))} ↗</a>
     </header>
     <div class="rec-product">
       ${brand ? `<span class="rec-brand">${esc(brand)}</span>` : ""}
@@ -502,22 +577,31 @@ function flash(sel, msg) { const el = $(sel); const o = el.textContent; el.textC
 
 function buildDfmeaRows() {
   const hits = filterHits(state.lastHits)
-  return aggregateByPattern(hits).slice(0, PATTERN_LIMIT).map(patternToDfmeaRow)
+  const filteredRecIds = allowedRecordIdSet()
+  return aggregateByPattern(hits).slice(0, PATTERN_LIMIT).map((g) => patternToDfmeaRow(g, filteredRecIds))
 }
-function patternToDfmeaRow(g) {
+function patternToDfmeaRow(g, filteredRecIds) {
   const p = g.pattern
   const ids = state.recordsByPattern.get(g.key) || []
-  const recs = ids.map((id) => state.byId.get(id)).filter(Boolean)
+  // Keep the stats/examples/sources filter-aware so the DFMEA row matches what
+  // the user sees in the pattern card above it.
+  const recs = ids.map((id) => state.byId.get(id))
+    .filter((r) => r && (!filteredRecIds || filteredRecIds.has(r.id)))
+  const stats = statsForGroup(g, filteredRecIds)
   const topCauses = topFreq(recs.map((r) => r.cause).filter((c) => c && c !== "unknown"), 3).join("; ") || "see linked records"
   const topEffects = topFreq(recs.map((r) => r.effect).filter(Boolean), 2).join("; ") || "see linked records"
   const hazards = [...new Set(recs.map((r) => r.hazard_type).filter(Boolean))].slice(0, 3).join(", ")
   const func = FUNCTION_FOR_FM[p.failure_mode] || `${catNice(p.category)} ${FUNCTION_FALLBACK}`
-  const sev = severityHint(p.injuries)
-  const evidence = `${p.verifiedActions} regulator action${p.verifiedActions === 1 ? "" : "s"} + ${p.unverifiedReports.toLocaleString()} unverified report${p.unverifiedReports === 1 ? "" : "s"}; ${p.injuredReports} with injury${p.unitsAffected ? `; ~${p.unitsAffected.toLocaleString()} units` : ""}`
+  const sev = severityHint(stats.injuries)
+  const injured = Object.entries(stats.injuries).filter(([k]) => k !== "none").reduce((s, [, n]) => s + n, 0)
+  const evidence = `${stats.verifiedActions} regulator action${stats.verifiedActions === 1 ? "" : "s"} + ${stats.unverifiedReports.toLocaleString()} unverified report${stats.unverifiedReports === 1 ? "" : "s"}; ${injured} with injury${stats.unitsAffected ? `; ~${stats.unitsAffected.toLocaleString()} units` : ""}${stats.isFiltered ? " (with filters)" : ""}`
   const verif = p.verification || p.mitigation || "Bench-test the failure mode under worst-case consumer use; add detection in DVT plan."
   const stdHint = p.standard ? ` ${p.standard}` : ""
-  // Pick 1-3 best source links: prefer verified records, then earliest.
-  const vrecs = recs.filter((r) => r.verified).sort((a, b) => (INJURY_RANK[b.injury] - INJURY_RANK[a.injury]) || ((b.units || 0) - (a.units || 0))).slice(0, 3)
+  // Prefer verified records in the hit set for sources, then any verified, then anything.
+  const sortV = (a, b) => (INJURY_RANK[b.injury] - INJURY_RANK[a.injury]) || ((b.units || 0) - (a.units || 0))
+  const vMatched = recs.filter((r) => r.verified && g.matchedIds.has(r.id)).sort(sortV)
+  const vOther = recs.filter((r) => r.verified && !g.matchedIds.has(r.id)).sort(sortV)
+  const vrecs = [...vMatched, ...vOther].slice(0, 3)
   const sources = (vrecs.length ? vrecs : recs.slice(0, 3)).map((r) => ({ label: sourceLabel(r), url: r.url }))
   return {
     function: func,
@@ -527,13 +611,16 @@ function patternToDfmeaRow(g) {
     severity: sev, evidence, verification: (verif + stdHint).trim(), sources,
   }
 }
+// Keep original casing: pick the first-seen form for each lowercased key.
 function topFreq(arr, n) {
   const map = new Map()
   for (const s of arr) {
     const k = s.toLowerCase().trim().slice(0, 80)
-    map.set(k, (map.get(k) || 0) + 1)
+    const slot = map.get(k) || { count: 0, display: s.trim() }
+    slot.count++
+    map.set(k, slot)
   }
-  return [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, n).map(([k]) => k)
+  return [...map.entries()].sort((a, b) => b[1].count - a[1].count).slice(0, n).map(([, v]) => v.display)
 }
 function severityHint(inj) {
   if (inj.serious >= 1) return `High (${inj.serious} serious injur${inj.serious === 1 ? "y" : "ies"} reported)`
@@ -541,12 +628,12 @@ function severityHint(inj) {
   if (inj.minor >= 1) return `Medium (${inj.minor} minor)`
   return "Low–Medium (no injuries reported; failure mode confirmed)"
 }
-function renderDfmea(groups) {
+function renderDfmea(groups, filteredRecIds) {
   const tbody = $("#dfmeaTable tbody"); tbody.innerHTML = ""
   if (!groups.length) { $("#dfmeaRows").hidden = true; return }
   $("#dfmeaRows").hidden = false
   for (const g of groups) {
-    const row = patternToDfmeaRow(g)
+    const row = patternToDfmeaRow(g, filteredRecIds)
     const tr = document.createElement("tr")
     tr.innerHTML = `
       <td>${esc(row.function)}</td>
@@ -556,7 +643,7 @@ function renderDfmea(groups) {
       <td>${esc(row.severity)}</td>
       <td>${esc(row.evidence)}</td>
       <td>${esc(row.verification)}</td>
-      <td class="src">${row.sources.map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)}</a>`).join("")}</td>`
+      <td class="src">${row.sources.map((s) => `<a href="${esc(safeHref(s.url))}" target="_blank" rel="noopener">${esc(s.label)}</a>`).join("")}</td>`
     tbody.appendChild(tr)
   }
 }

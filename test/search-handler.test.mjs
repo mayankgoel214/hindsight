@@ -54,10 +54,13 @@ test("search: 204 on OPTIONS (CORS preflight)", async () => {
 })
 
 test("search: rate-limit over cap returns fallback", async () => {
+  let call = 0
   await withFetch(async (url, opt) => {
     if (String(url).includes("redis.example")) {
-      // Simulate ipCount under cap but dayCount > GLOBAL_DAY
-      return { ok: true, json: async () => ([{ result: 1 }, { result: 1 }, { result: 99999 }, { result: 1 }]) }
+      call++
+      // Rate limiter now runs two separate pipelines: first IP, then global.
+      if (call === 1) return { ok: true, json: async () => ([{ result: 1 }, { result: 1 }]) }
+      return { ok: true, json: async () => ([{ result: 99999 }, { result: 1 }]) }
     }
     throw new Error("unexpected fetch " + url)
   }, async () => {
@@ -87,7 +90,7 @@ test("search: Gemini quota (429) returns fallback with reason=quota", async () =
   // Rebuild cache keys: use a unique query so query-cache miss.
   await withFetch(async (url) => {
     if (String(url).includes("redis.example")) {
-      return { ok: true, json: async () => ([{ result: 1 }, { result: 1 }, { result: 1 }, { result: 1 }]) }
+      return { ok: true, json: async () => ([{ result: 1 }, { result: 1 }]) }
     }
     if (String(url).includes("embedContent")) {
       return { ok: false, status: 429, json: async () => ({ error: { status: "RESOURCE_EXHAUSTED" } }) }
@@ -105,7 +108,7 @@ test("search: Gemini quota (429) returns fallback with reason=quota", async () =
 test("search: happy path returns {results, model, dims}", async () => {
   await withFetch(async (url) => {
     if (String(url).includes("redis.example")) {
-      return { ok: true, json: async () => ([{ result: 1 }, { result: 1 }, { result: 1 }, { result: 1 }]) }
+      return { ok: true, json: async () => ([{ result: 1 }, { result: 1 }]) }
     }
     if (String(url).includes("embedContent")) {
       // Return a 256-dim vector. The index returns top-K ids; we don't care which.
