@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-10-28",
+  "generatedAt": "2026-10-29",
   "model": {
     "embed": "gemini-embedding-2"
   },
   "corpus": {
-    "extracted": 5179
+    "extracted": 5256
   },
   "extraction": {
     "labeled": 60,
@@ -12,12 +12,12 @@
     "failure_mode_accuracy": 0.783,
     "hazard_type_accuracy": 0.817
   },
-  "quote_support_rate": 0.999,
+  "quote_support_rate": 0.998,
   "retrieval": {
     "queries": 15,
     "note": "hit@10/recall@10 are strict id-based and a conservative lower bound: the corpus has many near-identical valid matches, so the specific labeled records are often outranked. relevance@10 measures whether the top-10 surface the correct category + failure mode, which is what the tool needs.",
-    "hit@10": 0.4,
-    "recall@10": 0.24,
+    "hit@10": 0.467,
+    "recall@10": 0.273,
     "relevance_hit@10": 0.867,
     "relevance_precision@10": 0.647
   },
@@ -821,10 +821,10 @@
         "saferproducts-20180817-70428-2147386106",
         "saferproducts-20160205-59F46-2147422008",
         "saferproducts-20260614-808C2-2147316721",
-        "saferproducts-20170130-6C472-1627550",
         "saferproducts-20120706-3B74A-2147465946",
         "saferproducts-20230703-83510-2147346649",
-        "saferproducts-20160407-4529E-2147420377"
+        "saferproducts-20160407-4529E-2147420377",
+        "saferproducts-20180123-B69D6-1728384"
       ]
     },
     {
@@ -870,12 +870,12 @@
         "saferproducts-20151114-FB9EF-2147426692",
         "saferproducts-20200419-B6417-2147372822",
         "saferproducts-20151120-BE549-2147426496",
-        "saferproducts-20170714-56BF0-2147398972",
         "saferproducts-20250928-E21BE-2147327475",
         "saferproducts-20121123-A943C-2147461677",
         "saferproducts-20250601-D7620-2147330926",
         "saferproducts-20151116-5F3C1-2147426629",
-        "saferproducts-20190922-81CCD-2147377540"
+        "saferproducts-20190922-81CCD-2147377540",
+        "saferproducts-20210428-959EE-2147364454"
       ]
     },
     {
@@ -903,9 +903,9 @@
         "saferproducts-20260304-2AAED-2147322984",
         "saferproducts-20240528-759AF-2147338952",
         "saferproducts-20260726-C1E98-2147313372",
-        "saferproducts-20230808-AB2B2-2147345938",
         "saferproducts-20240314-1AB52-2147340381",
-        "saferproducts-20240325-34CA7-2147340150"
+        "saferproducts-20240325-34CA7-2147340150",
+        "saferproducts-20221006-DCC3E-2147353455"
       ]
     },
     {
@@ -921,13 +921,13 @@
         "saferproducts-20210712-F7AC3-2147362916",
         "saferproducts-20230205-A20DA-2147350934",
         "saferproducts-20210709-3E91D-2147363038",
+        "saferproducts-20210809-F130B-2147361219",
         "saferproducts-20210720-9DCD0-2147361746",
-        "saferproducts-20210714-5444E-2147362879",
         "saferproducts-20210709-A9EAE-2147363001",
         "saferproducts-20210709-715E7-2147363019",
         "saferproducts-20210709-C9303-2147362983",
         "saferproducts-20210710-2ABA8-2147362969",
-        "saferproducts-20210809-F130B-2147361219"
+        "saferproducts-20210710-0F8E0-2147362972"
       ]
     },
     {
@@ -956,8 +956,10 @@
     },
     {
       "q": "toaster oven electric shock hazard",
-      "hit": false,
-      "found": [],
+      "hit": true,
+      "found": [
+        "cpsc-10861"
+      ],
       "expected": [
         "cpsc-10861",
         "healthcanada-82296"
@@ -965,16 +967,16 @@
       "relevant_in_top10": 10,
       "relevance_precision_at10": 1,
       "top10": [
+        "saferproducts-20150901-20C2A-2147428802",
         "saferproducts-20160415-2C9BE-2147420167",
         "saferproducts-20160111-42086-2147424826",
-        "saferproducts-20150901-20C2A-2147428802",
         "saferproducts-20111226-A25B8-2147472053",
         "saferproducts-20140125-54317-2147447821",
         "saferproducts-20241227-9D135-2147334337",
-        "saferproducts-20190614-719BC-1880507",
         "saferproducts-20170624-0D5CD-2147399445",
         "saferproducts-20260714-7684A-2147313965",
-        "saferproducts-20150113-5813C-2147436538"
+        "saferproducts-20150113-5813C-2147436538",
+        "cpsc-10861"
       ]
     },
     {
@@ -1021,10 +1023,10 @@
         "saferproducts-20230201-74FB4-2147351014",
         "saferproducts-20170219-5144F-2147406957",
         "saferproducts-20210319-2C155-2147365280",
+        "saferproducts-20220629-DBA97-2147355322",
         "saferproducts-20150325-8CCAE-2147434251",
         "saferproducts-20140213-BB455-2147447279",
-        "saferproducts-20151013-72A18-2147427562",
-        "saferproducts-20201212-57DB6-2147367506"
+        "saferproducts-20151013-72A18-2147427562"
       ]
     },
     {
@@ -1048,11 +1050,11 @@
         "saferproducts-20161227-0C63D-2147408850",
         "saferproducts-20111014-B49DB-1207925",
         "saferproducts-20221202-6DCF3-2147352254",
+        "saferproducts-20140708-8EE71-1415731",
         "eu-SR-02105-26",
         "saferproducts-20131211-CA3C9-2147449133",
         "saferproducts-20230706-99F17-2147346584",
-        "saferproducts-20151123-F0972-1533234",
-        "saferproducts-20230122-FC7E5-2147351239"
+        "saferproducts-20151123-F0972-1533234"
       ]
     },
     {
@@ -1098,12 +1100,12 @@
         "saferproducts-20250624-1325F-2147330205",
         "saferproducts-20260410-57218-2147320739",
         "saferproducts-20120226-3CD56-2147469789",
+        "saferproducts-20230808-AB2B2-2147345938",
         "saferproducts-20241231-E98A5-2147334233",
         "saferproducts-20131008-431C3-2147451135",
-        "saferproducts-20220208-4A41E-2147357662",
         "saferproducts-20261004-232E2-2147308375",
-        "saferproducts-20110912-3B1CE-2147475388",
-        "saferproducts-20150607-964B2-2147431273"
+        "saferproducts-20220208-4A41E-2147357662",
+        "saferproducts-20110912-3B1CE-2147475388"
       ]
     },
     {
@@ -1126,8 +1128,8 @@
         "saferproducts-20190124-9BBD8-2147383117",
         "saferproducts-20170724-9DADB-2147398716",
         "saferproducts-20130508-BA8B8-1325705",
-        "saferproducts-20190320-E755F-2147382075",
-        "saferproducts-20240311-F068D-2147340462"
+        "saferproducts-20240311-F068D-2147340462",
+        "saferproducts-20121123-A943C-2147461677"
       ]
     },
     {
@@ -1170,13 +1172,13 @@
         "eu-SR-02858-26",
         "saferproducts-20241227-9D135-2147334337",
         "saferproducts-20151218-D338D-2147425727",
+        "eu-A12-1627-19",
         "saferproducts-20230822-3C0C1-2147345639",
         "eu-A12-01256-22",
+        "saferproducts-20150901-20C2A-2147428802",
         "saferproducts-20160123-9AC70-2147424394",
         "saferproducts-20170624-0D5CD-2147399445",
-        "saferproducts-20160925-A0758-2147413724",
-        "saferproducts-20260422-16ACA-2147320250",
-        "saferproducts-20110625-83E57-2147477851"
+        "saferproducts-20160925-A0758-2147413724"
       ]
     }
   ]

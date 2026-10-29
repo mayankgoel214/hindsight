@@ -1,28 +1,27 @@
 {
-  "generatedAt": "2026-10-29T04:44:03.815Z",
-  "date": "2026-10-28",
-  "records": 5179,
-  "delta": 0,
+  "generatedAt": "2026-10-29T05:43:43.918Z",
+  "date": "2026-10-29",
+  "records": 5256,
+  "delta": 77,
   "sources": {
     "cpsc": {
       "fresh": true,
-      "note": "initial seed"
+      "note": "fresh"
     },
     "healthcanada": {
       "fresh": true,
-      "note": "initial seed"
+      "note": "fresh"
     },
     "eu-safetygate": {
       "fresh": true,
-      "note": "initial seed"
+      "note": "fresh"
     },
     "saferproducts": {
       "fresh": true,
-      "note": "initial seed"
+      "note": "fresh"
     }
   },
   "pipeline": {
-    "quote_support_rate": 0.999
-  },
-  "note": "Seeded from initial pipeline run; refreshed weekly by .github/workflows/weekly-refresh.yml."
+    "quote_support_rate": 0.998
+  }
 }
