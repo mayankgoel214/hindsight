@@ -122,8 +122,15 @@ jobs:
           set -e
           BUNDLE=/tmp/cache-bundle.tar.gz
           # Only persist the pieces that cost real money or network to rebuild.
+          # SaferProducts.gov ships a 40 MB zip and a 100 MB CSV we don't need
+          # once the trimmed appliance JSON exists; drop them to keep the
+          # bundle under GitHub's 100 MB file limit.
           tar -czf "$BUNDLE" \
             --exclude='data/raw/**/*.log' \
+            --exclude='data/raw/saferproducts/SPDB.zip' \
+            --exclude='data/raw/saferproducts/IncidentReports.csv' \
+            --exclude='data/raw/saferproducts/Recalls.csv' \
+            --exclude='data/raw/saferproducts/Disclaimer.txt' \
             data/raw data/cache/extract data/cache/embed data/cache/extracted.json 2>/dev/null || \
             tar -czf "$BUNDLE" data/raw data/cache 2>/dev/null || true
           ls -lh "$BUNDLE"

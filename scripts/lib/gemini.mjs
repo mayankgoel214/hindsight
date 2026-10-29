@@ -72,7 +72,8 @@ async function post(url, body, { apiKey, timeoutMs = 60000, tries = 5 } = {}) {
       });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) {
-        const e = new Error(`gemini ${r.status}: ${j.error?.status || j.error?.message || ""}`);
+        const detail = [j.error?.status, j.error?.message].filter(Boolean).join(" — ") || JSON.stringify(j).slice(0, 400);
+        const e = new Error(`gemini ${r.status}: ${detail}`);
         e.status = r.status;
         if (RETRYABLE.has(r.status) && attempt < tries - 1) { lastErr = e; await sleep(backoff(attempt, r)); continue; }
         throw e;
