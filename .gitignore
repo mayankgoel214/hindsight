@@ -17,3 +17,5 @@ data/records.json
 
 # Scratch
 /tmp/
+.vercel
+.env*
