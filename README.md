@@ -150,6 +150,21 @@ and evaluate together are a few cents.
 | `scripts/lib/` | `canon.mjs` (brand + failure-mode canonicalization), `taxonomy.mjs`, `gemini.mjs`, etc. |
 | `test/` | `node --test` unit + handler tests (mocked fetch). `npm test`. |
 
+## Weekly data refresh
+
+A GitHub Action (`.github/workflows/weekly-refresh.yml`) re-runs the pipeline
+every Monday at 10:00 UTC, commits updated `public/data/*` back to `main`, and
+publishes a new build. Caches (per-record extraction + embedding) and raw-source
+snapshots are persisted on an orphan `data-cache` branch (force-pushed each
+run), so a weekly refresh only pays for genuinely new records. A hard cost
+guard aborts the run if more than ~600 records would need a new extract call.
+Source failures are tolerated — if a feed is unreachable, the previous
+snapshot is reused and the run summary flags the stale source.
+
+Scheduled refreshes are time-limited to the three Mondays Nov 2, Nov 9 and
+Nov 16, 2026. After 2026-11-17 UTC the workflow's first step short-circuits
+scheduled runs; manual `workflow_dispatch` runs still work.
+
 ## Not affiliated
 
 Hindsight is a concept built by [Mayank Goel](https://mayank-goel.com) as a

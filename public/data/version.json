@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-10-29T04:44:03.815Z",
+  "date": "2026-10-28",
+  "records": 5179,
+  "delta": 0,
+  "sources": {
+    "cpsc": {
+      "fresh": true,
+      "note": "initial seed"
+    },
+    "healthcanada": {
+      "fresh": true,
+      "note": "initial seed"
+    },
+    "eu-safetygate": {
+      "fresh": true,
+      "note": "initial seed"
+    },
+    "saferproducts": {
+      "fresh": true,
+      "note": "initial seed"
+    }
+  },
+  "pipeline": {
+    "quote_support_rate": 0.999
+  },
+  "note": "Seeded from initial pipeline run; refreshed weekly by .github/workflows/weekly-refresh.yml."
+}

@@ -189,6 +189,7 @@
       <h1 id="about-h">About &amp; data</h1>
       <p class="lede">Hindsight is a concept tool. It is not affiliated with SharkNinja.
         Everything on this site is built from public, free sources.</p>
+      <p class="muted"><span id="data-updated-about">Data last updated: &hellip;</span></p>
     </div>
     <div class="about-grid">
       <article class="card">
@@ -245,8 +246,27 @@
 <footer class="foot">
   <small>Hindsight · concept · not affiliated with SharkNinja ·
     data from CPSC, Health Canada, EU Safety Gate, SaferProducts.gov ·
-    AI-assisted search; every claim links to its source</small>
+    AI-assisted search; every claim links to its source ·
+    <span id="data-updated-foot" class="muted">Data last updated: &hellip;</span></small>
 </footer>
+
+<script>
+  // Surface "Data last updated" in the footer and About page from
+  // /data/version.json (written by scripts/weekly-refresh.mjs). Silent on 404.
+  (function () {
+    fetch("/data/version.json", { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((v) => {
+        if (!v || !v.date) return;
+        const txt = "Data last updated: " + v.date + " (" + (v.records || 0).toLocaleString() + " records)";
+        const foot = document.getElementById("data-updated-foot");
+        if (foot) foot.textContent = txt;
+        const about = document.getElementById("data-updated-about");
+        if (about) about.textContent = txt;
+      })
+      .catch(() => {});
+  })();
+</script>
 
 <template id="recordTpl">
   <li class="rec">

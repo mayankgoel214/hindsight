@@ -1,0 +1,148 @@
+name: weekly-refresh
+
+# Scheduled runs are time-limited: this workflow is scoped to the three
+# Mondays 2026-11-02, 2026-11-09, 2026-11-16 (UTC). After 2026-11-17 UTC the
+# first step short-circuits for scheduled runs. Manual workflow_dispatch runs
+# are always allowed.
+on:
+  schedule:
+    # Mondays at 10:00 UTC.
+    - cron: "0 10 * * 1"
+  workflow_dispatch:
+    inputs:
+      max_extract_new:
+        description: "Fail if more than N records would need a new extract call."
+        required: false
+        default: "600"
+      skip_fetch:
+        description: "Skip source fetches (debug — reuse cached snapshots)."
+        required: false
+        default: "false"
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hindsight-weekly-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Gate scheduled runs by end date
+        id: gate
+        run: |
+          END="2026-11-17"
+          TODAY="$(date -u +%F)"
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$TODAY" \> "$END" ]; then
+            echo "Scheduled run on $TODAY is after end date $END; skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout main
+        if: steps.gate.outputs.skip != 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        if: steps.gate.outputs.skip != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Restore data-cache branch (raw snapshots + extract/embed caches)
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          set -e
+          if git ls-remote --exit-code --heads origin data-cache > /dev/null 2>&1; then
+            git fetch origin data-cache --depth=1
+            git worktree add --detach /tmp/data-cache origin/data-cache
+            if [ -f /tmp/data-cache/cache-bundle.tar.gz ]; then
+              echo "Restoring cache bundle..."
+              tar -xzf /tmp/data-cache/cache-bundle.tar.gz -C .
+              echo "Restored data/ sizes:"
+              du -sh data/raw data/cache 2>/dev/null || true
+            else
+              echo "No cache-bundle.tar.gz on data-cache branch; starting cold."
+            fi
+            git worktree remove /tmp/data-cache --force
+          else
+            echo "data-cache branch does not exist yet; starting cold."
+            mkdir -p data/raw data/cache/extract data/cache/embed
+          fi
+
+      - name: Run weekly refresh pipeline
+        id: pipeline
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -e
+          FLAGS=(--max-extract-new "${{ github.event.inputs.max_extract_new || '600' }}")
+          if [ "${{ github.event.inputs.skip_fetch }}" = "true" ]; then
+            FLAGS+=(--skip-fetch)
+          fi
+          node scripts/weekly-refresh.mjs "${FLAGS[@]}"
+
+      - name: Commit public/data if it changed
+        id: commit
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data
+          if git diff --staged --quiet; then
+            echo "No changes in public/data; nothing to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            DELTA="${{ steps.pipeline.outputs.delta }}"
+            TOTAL="${{ steps.pipeline.outputs.new_records }}"
+            SIGN="+"
+            if [ "${DELTA#-}" != "$DELTA" ]; then SIGN=""; fi
+            git commit -m "data: weekly refresh (${SIGN}${DELTA} records, ${TOTAL} total)" \
+              -m "Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>"
+            git push origin HEAD:main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Repack cache bundle to data-cache branch
+        # Repack whenever we at least got through normalize (records.json
+        # exists). This covers both success and partial-run cases where new
+        # snapshots were pulled, but skips the "early-failure, empty data/"
+        # case that would clobber a good bundle.
+        if: always() && steps.gate.outputs.skip != 'true' && hashFiles('data/records.json') != ''
+        run: |
+          set -e
+          BUNDLE=/tmp/cache-bundle.tar.gz
+          # Only persist the pieces that cost real money or network to rebuild.
+          tar -czf "$BUNDLE" \
+            --exclude='data/raw/**/*.log' \
+            data/raw data/cache/extract data/cache/embed data/cache/extracted.json 2>/dev/null || \
+            tar -czf "$BUNDLE" data/raw data/cache 2>/dev/null || true
+          ls -lh "$BUNDLE"
+          # Build an orphan commit on data-cache branch with just this bundle.
+          WORKDIR=/tmp/data-cache-push
+          rm -rf "$WORKDIR" && mkdir -p "$WORKDIR"
+          cp "$BUNDLE" "$WORKDIR/cache-bundle.tar.gz"
+          cat > "$WORKDIR/README.md" <<EOF
+          # hindsight data-cache
+
+          This branch holds a single tarball ('cache-bundle.tar.gz') that the
+          weekly-refresh workflow restores to data/ before each run. Force-pushed
+          each run; no history is kept.
+          EOF
+          cd "$WORKDIR"
+          git init -q -b data-cache
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -q -m "cache: $(date -u +%FT%TZ)"
+          git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push --force origin data-cache
