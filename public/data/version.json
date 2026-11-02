@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-29T05:43:43.918Z",
-  "date": "2026-10-29",
-  "records": 5256,
-  "delta": 77,
+  "generatedAt": "2026-11-02T19:55:02.138Z",
+  "date": "2026-11-02",
+  "records": 5255,
+  "delta": -1,
   "sources": {
     "cpsc": {
       "fresh": true,

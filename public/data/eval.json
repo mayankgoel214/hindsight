@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-10-29",
+  "generatedAt": "2026-11-02",
   "model": {
     "embed": "gemini-embedding-2"
   },
   "corpus": {
-    "extracted": 5256
+    "extracted": 5255
   },
   "extraction": {
     "labeled": 60,
@@ -903,9 +903,9 @@
         "saferproducts-20260304-2AAED-2147322984",
         "saferproducts-20240528-759AF-2147338952",
         "saferproducts-20260726-C1E98-2147313372",
+        "saferproducts-20261012-E28CE-2147307941",
         "saferproducts-20240314-1AB52-2147340381",
-        "saferproducts-20240325-34CA7-2147340150",
-        "saferproducts-20221006-DCC3E-2147353455"
+        "saferproducts-20240325-34CA7-2147340150"
       ]
     },
     {
