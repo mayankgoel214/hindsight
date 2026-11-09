@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-11-02",
+  "generatedAt": "2026-11-09",
   "model": {
     "embed": "gemini-embedding-2"
   },
   "corpus": {
-    "extracted": 5255
+    "extracted": 5253
   },
   "extraction": {
     "labeled": 60,
@@ -19,7 +19,7 @@
     "hit@10": 0.467,
     "recall@10": 0.273,
     "relevance_hit@10": 0.867,
-    "relevance_precision@10": 0.647
+    "relevance_precision@10": 0.64
   },
   "perRecord": [
     {
@@ -812,8 +812,8 @@
         "cpsc-10422",
         "healthcanada-77361"
       ],
-      "relevant_in_top10": 9,
-      "relevance_precision_at10": 0.9,
+      "relevant_in_top10": 8,
+      "relevance_precision_at10": 0.8,
       "top10": [
         "saferproducts-20151025-FFC84-2147427248",
         "saferproducts-20180627-4FFC0-2147387148",
@@ -821,10 +821,10 @@
         "saferproducts-20180817-70428-2147386106",
         "saferproducts-20160205-59F46-2147422008",
         "saferproducts-20260614-808C2-2147316721",
+        "saferproducts-20261016-71487-2147307751",
         "saferproducts-20120706-3B74A-2147465946",
         "saferproducts-20230703-83510-2147346649",
-        "saferproducts-20160407-4529E-2147420377",
-        "saferproducts-20180123-B69D6-1728384"
+        "saferproducts-20160407-4529E-2147420377"
       ]
     },
     {
@@ -993,14 +993,14 @@
       "top10": [
         "saferproducts-20210705-9A2BE-2147363114",
         "saferproducts-20241006-2A08A-2147336122",
+        "saferproducts-20261019-E15FF-2147307634",
         "saferproducts-20141223-FD8D5-2147437523",
         "saferproducts-20150904-56971-2147428708",
         "saferproducts-20160912-D8F0B-2147414253",
         "saferproducts-20150101-30FF9-2147437110",
         "saferproducts-20141226-9FD0C-2147437424",
         "saferproducts-20141031-C040E-1438310",
-        "saferproducts-20251215-217FD-5782600",
-        "saferproducts-20140830-EB492-2147441389"
+        "saferproducts-20251215-217FD-5782600"
       ]
     },
     {
@@ -1145,6 +1145,7 @@
       "relevance_precision_at10": 0.9,
       "top10": [
         "saferproducts-20260919-F910A-2147309605",
+        "saferproducts-20261010-03319-2147308046",
         "saferproducts-20231023-57A11-2147344501",
         "saferproducts-20220809-C20F2-2147354500",
         "saferproducts-20240716-2B7C0-2147337944",
@@ -1152,8 +1153,7 @@
         "saferproducts-20250227-0675C-2147332880",
         "saferproducts-20250616-ADCEB-2147330437",
         "saferproducts-20220718-86C34-2147354929",
-        "saferproducts-20241002-13E37-2147336196",
-        "saferproducts-20240528-BE03C-2147338956"
+        "saferproducts-20241002-13E37-2147336196"
       ]
     },
     {
