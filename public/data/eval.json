@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-11-09",
+  "generatedAt": "2026-11-16",
   "model": {
     "embed": "gemini-embedding-2"
   },
   "corpus": {
-    "extracted": 5253
+    "extracted": 5236
   },
   "extraction": {
     "labeled": 60,
@@ -19,7 +19,7 @@
     "hit@10": 0.467,
     "recall@10": 0.273,
     "relevance_hit@10": 0.867,
-    "relevance_precision@10": 0.64
+    "relevance_precision@10": 0.647
   },
   "perRecord": [
     {
@@ -1117,19 +1117,19 @@
         "cpsc-10230",
         "eu-SR-02283-26"
       ],
-      "relevant_in_top10": 3,
-      "relevance_precision_at10": 0.3,
+      "relevant_in_top10": 4,
+      "relevance_precision_at10": 0.4,
       "top10": [
         "saferproducts-20110807-593F3-2147476474",
         "saferproducts-20140615-C9E66-2147443673",
         "saferproducts-20120717-4AF75-2147465605",
         "saferproducts-20131221-5ECB0-2147448867",
+        "saferproducts-20261021-E925D-2147307523",
         "saferproducts-20151120-BE549-2147426496",
         "saferproducts-20190124-9BBD8-2147383117",
         "saferproducts-20170724-9DADB-2147398716",
         "saferproducts-20130508-BA8B8-1325705",
-        "saferproducts-20240311-F068D-2147340462",
-        "saferproducts-20121123-A943C-2147461677"
+        "saferproducts-20240311-F068D-2147340462"
       ]
     },
     {
